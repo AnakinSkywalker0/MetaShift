@@ -4,6 +4,7 @@ OpenEnv-compliant endpoints: /reset, /step, /state, /score, /tasks, /health
 """
 
 from __future__ import annotations
+from typing import Any, Optional
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -38,7 +39,91 @@ env_manager = EnvironmentManager()
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "environment": "metashift"}
+    return {"status": "healthy", "environment": "metashift"}
+
+
+@app.get("/metadata")
+def metadata():
+    return {
+        "name": "MetaShift",
+        "description": (
+            "An OpenEnv-compliant game balance tuning environment. "
+            "The AI agent plays the role of a live-ops engineer during a patch crisis. "
+            "Each episode is a broken game with metric violations. "
+            "The agent investigates, patches, and iterates until balance is restored."
+        ),
+        "version": "1.0.0",
+        "tasks": ["single-stat-crisis", "cascade-crisis", "meta-shift-crisis"],
+    }
+
+
+@app.get("/schema")
+def schema():
+    return {
+        "action": {
+            "type": "object",
+            "properties": {
+                "action_type": {
+                    "type": "string",
+                    "enum": ["investigate", "adjust_stat", "submit_report"],
+                    "description": "Type of action to perform",
+                },
+                "target": {"type": "string", "description": "Weapon, archetype, or perk name"},
+                "parameter": {"type": "string", "description": "Stat parameter to adjust"},
+                "change": {"type": "number", "description": "Multiplier delta (e.g. -0.15 = 15% reduction)"},
+                "root_cause": {"type": "string", "description": "Root cause description for submit_report"},
+                "changes_made": {"type": "array", "description": "List of changes made"},
+                "steps_taken": {"type": "integer", "description": "Number of steps taken"},
+            },
+            "required": ["action_type"],
+        },
+        "observation": {
+            "type": "object",
+            "properties": {
+                "task_id": {"type": "string"},
+                "episode_id": {"type": "string"},
+                "current_metrics": {
+                    "type": "object",
+                    "properties": {
+                        "weapon_usage_rates": {"type": "object"},
+                        "archetype_winrates": {"type": "object"},
+                        "average_ttk": {"type": "number"},
+                        "room_dropout_rates": {"type": "object"},
+                        "dominant_strategy": {"type": ["string", "null"]},
+                        "perk_uptimes": {"type": "object"},
+                        "archetype_economy_rates": {"type": "object"},
+                    },
+                },
+                "balance_envelope": {"type": "object"},
+                "iteration_history": {"type": "array"},
+                "available_actions": {"type": "array"},
+                "steps_remaining": {"type": "integer"},
+                "chaos_event": {"type": ["object", "null"]},
+                "done": {"type": "boolean"},
+            },
+        },
+        "state": {
+            "type": "object",
+            "properties": {
+                "episode_id": {"type": "string"},
+                "observation": {"type": "object"},
+                "cumulative_reward": {"type": "number"},
+                "done": {"type": "boolean"},
+            },
+        },
+    }
+
+
+@app.post("/mcp")
+async def mcp(request: Optional[Any] = None):
+    return {
+        "jsonrpc": "2.0",
+        "id": None,
+        "result": {
+            "environment": "MetaShift",
+            "capabilities": ["reset", "step", "state", "score"],
+        },
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -128,6 +213,10 @@ def score(req: StateRequest):
 # Entry point for uvicorn
 # ---------------------------------------------------------------------------
 
-if __name__ == "__main__":
+def main():
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=7860)
+
+
+if __name__ == "__main__":
+    main()
