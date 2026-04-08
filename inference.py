@@ -11,7 +11,7 @@ Uses OpenAI-compatible client.  Reads env vars:
 stdout follows exact OpenEnv format:
   [START] task=<name> env=<benchmark> model=<model>
   [STEP] step=<n> action=<str> reward=<0.00> done=<true|false> error=<msg|null>
-  [END] success=<true|false> steps=<n> score=<0.000> rewards=<r1,r2,...>
+  [END] success=<true|false> steps=<n> score=<0.00> rewards=<r1,r2,...>
 """
 
 from __future__ import annotations
@@ -233,7 +233,7 @@ def run():
     rewards_str = ",".join(f"{r:.2f}" for r in all_rewards) if all_rewards else "0.00"
     print(
         f"[END] success={str(success).lower()} steps={step_count} "
-        f"score={score_total:.3f} rewards={rewards_str}",
+        f"score={score_total:.2f} rewards={rewards_str}",
         flush=True,
     )
 
