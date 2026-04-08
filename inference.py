@@ -25,11 +25,12 @@ from openai import OpenAI
 # Config
 # ---------------------------------------------------------------------------
 
-API_BASE_URL = os.environ.get("API_BASE_URL", "")
-MODEL_NAME   = os.environ.get("MODEL_NAME", "")
-HF_TOKEN     = os.environ.get("HF_TOKEN", "")
-TASK_ID      = os.environ.get("TASK_ID", "single-stat-crisis")
-ENV_URL      = os.environ.get("ENV_URL", "http://localhost:7860")
+API_BASE_URL     = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
+MODEL_NAME       = os.getenv("MODEL_NAME", "Qwen/Qwen2.5-72B-Instruct")
+HF_TOKEN         = os.getenv("HF_TOKEN")
+LOCAL_IMAGE_NAME = os.getenv("LOCAL_IMAGE_NAME")
+TASK_ID          = os.getenv("TASK_ID", "single-stat-crisis")
+ENV_URL          = os.getenv("ENV_URL", "http://localhost:7860")
 
 SUCCESS_THRESHOLD = 0.30
 
