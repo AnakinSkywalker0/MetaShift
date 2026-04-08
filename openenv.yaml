@@ -1,0 +1,177 @@
+# MetaShift — OpenEnv Configuration
+# Game balance tuning environment where an AI agent diagnoses and fixes
+# broken game balance during a live patch crisis.
+
+environment:
+  name: MetaShift
+  description: >
+    An OpenEnv-compliant game balance tuning environment. The AI agent plays the role
+    of a game balance designer during a live patch crisis. Each episode presents a broken
+    game with specific balance violations. The agent must investigate metrics, make targeted
+    balance changes, and iterate until the game is within acceptable thresholds.
+  version: "1.0.0"
+  tags:
+    - openenv
+    - game-design
+    - balance-tuning
+    - reasoning
+    - multi-step
+
+server:
+  image: Dockerfile
+  port: 7860
+  readiness_endpoint: /health
+
+tasks:
+  - id: single-stat-crisis
+    name: "Single Stat Crisis"
+    description: >
+      One weapon stat is obviously out of range, causing 3 metrics to go out of balance.
+      No cascade effects. The agent should identify the broken stat and fix it directly.
+    difficulty: easy
+    max_steps: 5
+    expected_score_range: [0.7, 1.0]
+
+  - id: cascade-crisis
+    name: "Cascade Crisis"
+    description: >
+      One change in the last patch created a 2-step cascade affecting 6 metrics across
+      2 game systems. The agent must investigate before acting to understand the cascade.
+    difficulty: medium
+    max_steps: 8
+    expected_score_range: [0.4, 0.7]
+
+  - id: meta-shift-crisis
+    name: "Meta Shift Crisis"
+    description: >
+      The meta is unstable and at step 4, a chaos event reveals a new dominant strategy
+      emerging from perk + weapon + economy interaction. 10 metrics across 3 systems are
+      affected. The agent must recognise its previous work is partially invalidated and re-reason.
+    difficulty: hard
+    max_steps: 12
+    expected_score_range: [0.3, 0.5]
+
+endpoints:
+  reset:
+    method: POST
+    path: /reset
+    request_schema:
+      type: object
+      properties:
+        task_id:
+          type: string
+          enum: [single-stat-crisis, cascade-crisis, meta-shift-crisis]
+        seed:
+          type: integer
+    response_schema:
+      type: object
+      properties:
+        episode_id:
+          type: string
+        observation:
+          type: object
+        task_description:
+          type: string
+
+  step:
+    method: POST
+    path: /step
+    request_schema:
+      type: object
+      properties:
+        episode_id:
+          type: string
+        action:
+          type: object
+          properties:
+            action_type:
+              type: string
+              enum: [investigate, adjust_stat, submit_report]
+            target:
+              type: string
+            parameter:
+              type: string
+            change:
+              type: number
+            root_cause:
+              type: string
+            changes_made:
+              type: array
+            steps_taken:
+              type: integer
+    response_schema:
+      type: object
+      properties:
+        observation:
+          type: object
+        reward:
+          type: object
+        investigate_result:
+          type: object
+
+  state:
+    method: POST
+    path: /state
+    request_schema:
+      type: object
+      properties:
+        episode_id:
+          type: string
+    response_schema:
+      type: object
+      properties:
+        episode_id:
+          type: string
+        observation:
+          type: object
+        cumulative_reward:
+          type: number
+        done:
+          type: boolean
+
+  score:
+    method: POST
+    path: /score
+    request_schema:
+      type: object
+      properties:
+        episode_id:
+          type: string
+    response_schema:
+      type: object
+      properties:
+        total:
+          type: number
+        metrics_score:
+          type: number
+        root_cause_score:
+          type: number
+        efficiency_score:
+          type: number
+        report_quality_score:
+          type: number
+
+scoring:
+  range: [0.0, 1.0]
+  weights:
+    metrics_within_envelope: 0.40
+    root_cause_identified: 0.25
+    fix_efficiency: 0.20
+    report_quality: 0.15
+  deterministic: true
+
+inference:
+  script: inference.py
+  env_vars:
+    - API_BASE_URL
+    - MODEL_NAME
+    - HF_TOKEN
+  stdout_format:
+    start: "[START] task=<name> env=<benchmark> model=<model>"
+    step: "[STEP] step=<n> action=<str> reward=<0.00> done=<true|false> error=<msg|null>"
+    end: "[END] success=<true|false> steps=<n> score=<0.000> rewards=<r1,r2,...>"
+
+resources:
+  max_runtime_minutes: 20
+  recommended_vcpu: 2
+  recommended_ram_gb: 8

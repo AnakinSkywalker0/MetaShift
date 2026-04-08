@@ -1,0 +1,357 @@
+{
+  "single-stat-crisis": {
+    "description": "One weapon stat is obviously out of range. The Plasma Rifle's TTK was accidentally halved in the last patch, creating a usage spike and cascading winrate distortion.",
+    "max_steps": 5,
+    "game_mode": "PvP",
+    "ground_truth": {
+      "root_cause": "plasma_rifle_ttk_too_low",
+      "root_cause_keywords": ["plasma_rifle", "ttk", "time_to_kill", "too_low", "too_fast", "halved", "overpowered"],
+      "optimal_fix": {"target": "plasma_rifle", "parameter": "ttk", "change_range": [0.60, 1.10]},
+      "expected_violations_initial": 3
+    },
+    "weapons": {
+      "assault_rifle": {
+        "ttk": 3.2,
+        "damage": 28,
+        "fire_rate": 8.5,
+        "base_usage_multiplier": 1.0
+      },
+      "plasma_rifle": {
+        "ttk": 1.6,
+        "damage": 45,
+        "fire_rate": 6.0,
+        "base_usage_multiplier": 1.0
+      },
+      "shotgun": {
+        "ttk": 2.8,
+        "damage": 85,
+        "fire_rate": 1.5,
+        "base_usage_multiplier": 0.9
+      },
+      "sniper_rifle": {
+        "ttk": 3.5,
+        "damage": 120,
+        "fire_rate": 0.8,
+        "base_usage_multiplier": 0.7
+      }
+    },
+    "archetypes": {
+      "rusher": {
+        "base_winrate": 0.50,
+        "base_economy": 100,
+        "base_dropout": 0.05,
+        "preferred_weapons": ["plasma_rifle", "shotgun"],
+        "perks": ["adrenaline_rush"]
+      },
+      "tactician": {
+        "base_winrate": 0.50,
+        "base_economy": 105,
+        "base_dropout": 0.04,
+        "preferred_weapons": ["assault_rifle"],
+        "perks": ["tactical_shield"]
+      },
+      "marksman": {
+        "base_winrate": 0.50,
+        "base_economy": 95,
+        "base_dropout": 0.06,
+        "preferred_weapons": ["sniper_rifle", "assault_rifle"],
+        "perks": ["eagle_eye"]
+      }
+    },
+    "perks": {
+      "adrenaline_rush": {
+        "type": "kill_reward",
+        "kill_threshold": 3,
+        "avg_kills_per_minute": 1.8,
+        "perk_duration": 10,
+        "economy_bonus": 0.05
+      },
+      "tactical_shield": {
+        "type": "active",
+        "cooldown": 25,
+        "active_duration": 8,
+        "economy_bonus": 0.0
+      },
+      "eagle_eye": {
+        "type": "passive",
+        "base_uptime": 1.0,
+        "economy_bonus": 0.0
+      }
+    },
+    "synergy_combos": []
+  },
+
+  "cascade-crisis": {
+    "description": "Last patch buffed the Bloodhound perk's economy multiplier by 40%, which cascaded into Rusher economy dominance and then Tactician dropout spikes. Two systems are interlinked — perk economy and archetype survivability.",
+    "max_steps": 8,
+    "game_mode": "PvE",
+    "ground_truth": {
+      "root_cause": "bloodhound_perk_economy_multiplier_overbuffed",
+      "root_cause_keywords": ["bloodhound", "economy", "multiplier", "overbuffed", "buffed", "perk", "cascade"],
+      "optimal_fixes": [
+        {"target": "bloodhound", "parameter": "economy_multiplier", "change_range": [-0.20, -0.10]},
+        {"target": "bloodhound", "parameter": "kill_threshold", "change_range": [0.30, 0.80]}
+      ],
+      "expected_violations_initial": 6
+    },
+    "weapons": {
+      "assault_rifle": {
+        "ttk": 3.0,
+        "damage": 30,
+        "fire_rate": 9.0,
+        "base_usage_multiplier": 1.0
+      },
+      "plasma_rifle": {
+        "ttk": 3.1,
+        "damage": 42,
+        "fire_rate": 6.5,
+        "base_usage_multiplier": 1.0
+      },
+      "shotgun": {
+        "ttk": 2.6,
+        "damage": 90,
+        "fire_rate": 1.4,
+        "base_usage_multiplier": 0.85
+      },
+      "smg": {
+        "ttk": 2.9,
+        "damage": 18,
+        "fire_rate": 14.0,
+        "base_usage_multiplier": 1.1
+      },
+      "sniper_rifle": {
+        "ttk": 3.8,
+        "damage": 130,
+        "fire_rate": 0.7,
+        "base_usage_multiplier": 0.65
+      }
+    },
+    "archetypes": {
+      "rusher": {
+        "base_winrate": 0.50,
+        "base_economy": 100,
+        "base_dropout": 0.05,
+        "preferred_weapons": ["smg", "shotgun"],
+        "perks": ["bloodhound", "adrenaline_rush"]
+      },
+      "tactician": {
+        "base_winrate": 0.50,
+        "base_economy": 82,
+        "base_dropout": 0.05,
+        "preferred_weapons": ["assault_rifle", "plasma_rifle"],
+        "perks": ["tactical_reload"]
+      },
+      "marksman": {
+        "base_winrate": 0.50,
+        "base_economy": 85,
+        "base_dropout": 0.04,
+        "preferred_weapons": ["sniper_rifle", "assault_rifle"],
+        "perks": ["eagle_eye"]
+      },
+      "support": {
+        "base_winrate": 0.50,
+        "base_economy": 78,
+        "base_dropout": 0.06,
+        "preferred_weapons": ["assault_rifle", "smg"],
+        "perks": ["team_heal"]
+      }
+    },
+    "perks": {
+      "bloodhound": {
+        "type": "kill_reward",
+        "kill_threshold": 1,
+        "avg_kills_per_minute": 8.0,
+        "perk_duration": 20,
+        "economy_multiplier": 1.80,
+        "economy_bonus": 0.0
+      },
+      "adrenaline_rush": {
+        "type": "kill_reward",
+        "kill_threshold": 4,
+        "avg_kills_per_minute": 2.0,
+        "perk_duration": 8,
+        "economy_bonus": 0.03
+      },
+      "tactical_reload": {
+        "type": "active",
+        "cooldown": 20,
+        "active_duration": 6,
+        "economy_bonus": 0.0
+      },
+      "eagle_eye": {
+        "type": "passive",
+        "base_uptime": 1.0,
+        "economy_bonus": 0.0
+      },
+      "team_heal": {
+        "type": "active",
+        "cooldown": 30,
+        "active_duration": 5,
+        "economy_bonus": 0.02
+      }
+    },
+    "synergy_combos": []
+  },
+
+  "meta-shift-crisis": {
+    "description": "The meta is already unstable — slightly skewed weapon TTKs and economy rates. At step 4, a chaos event reveals a dominant strategy: the Vanguard archetype discovers that Plasma Rifle + Bloodhound perk creates a self-reinforcing kill-reward economy loop that outperforms everything.",
+    "max_steps": 12,
+    "game_mode": "PvP",
+    "ground_truth": {
+      "root_cause": "plasma_bloodhound_economy_loop",
+      "root_cause_keywords": ["plasma", "bloodhound", "economy", "loop", "synergy", "vanguard", "kill_reward", "dominant"],
+      "pre_chaos_fixes": [
+        {"target": "shotgun", "parameter": "ttk", "change_range": [-0.10, 0.10]},
+        {"target": "marksman", "parameter": "base_economy", "change_range": [0.05, 0.20]}
+      ],
+      "post_chaos_fixes": [
+        {"target": "bloodhound", "parameter": "economy_multiplier", "change_range": [-0.25, -0.10]},
+        {"target": "plasma_rifle", "parameter": "ttk", "change_range": [0.10, 0.30]},
+        {"target": "bloodhound", "parameter": "kill_threshold", "change_range": [0.30, 1.00]}
+      ],
+      "expected_violations_initial": 5,
+      "expected_violations_post_chaos": 10
+    },
+    "chaos_event": {
+      "trigger_step": 4,
+      "title": "Emergent Dominant Strategy Discovered",
+      "description": "Community discovers that Vanguard + Plasma Rifle + Bloodhound creates a self-sustaining kill-reward economy loop. Plasma Rifle's fast TTK feeds Bloodhound kills, Bloodhound economy bonus funds rapid re-engagement, creating a cycle that dominates every lobby.",
+      "affected_systems": ["weapons", "perks", "economy"],
+      "hint": "The interaction between Plasma Rifle TTK, Bloodhound's kill-threshold, and its economy multiplier creates a feedback loop that no single nerf can break.",
+      "mechanical_change": {
+        "synergy_combos_add": [
+          {
+            "strategy_name": "Vanguard Plasma-Bloodhound Loop",
+            "weapon": "plasma_rifle",
+            "perk": "bloodhound",
+            "archetype": "vanguard",
+            "trigger_usage_threshold": 0.30,
+            "trigger_uptime_threshold": 0.60,
+            "trigger_winrate_threshold": 0.05
+          }
+        ],
+        "perk_overrides": {
+          "bloodhound": {
+            "synergy_kpm_override": 5.0,
+            "synergy_weapon": "plasma_rifle"
+          }
+        },
+        "weapon_overrides": {
+          "plasma_rifle": {
+            "base_usage_multiplier": 1.35
+          }
+        }
+      }
+    },
+    "weapons": {
+      "assault_rifle": {
+        "ttk": 3.1,
+        "damage": 29,
+        "fire_rate": 8.8,
+        "base_usage_multiplier": 1.0
+      },
+      "plasma_rifle": {
+        "ttk": 2.0,
+        "damage": 44,
+        "fire_rate": 6.2,
+        "base_usage_multiplier": 1.1
+      },
+      "shotgun": {
+        "ttk": 1.6,
+        "damage": 95,
+        "fire_rate": 1.8,
+        "base_usage_multiplier": 0.95
+      },
+      "smg": {
+        "ttk": 2.8,
+        "damage": 19,
+        "fire_rate": 13.5,
+        "base_usage_multiplier": 1.05
+      },
+      "sniper_rifle": {
+        "ttk": 3.8,
+        "damage": 125,
+        "fire_rate": 0.75,
+        "base_usage_multiplier": 0.60
+      },
+      "lmg": {
+        "ttk": 3.4,
+        "damage": 35,
+        "fire_rate": 7.0,
+        "base_usage_multiplier": 0.75
+      }
+    },
+    "archetypes": {
+      "rusher": {
+        "base_winrate": 0.50,
+        "base_economy": 100,
+        "base_dropout": 0.05,
+        "preferred_weapons": ["smg", "shotgun"],
+        "perks": ["adrenaline_rush"]
+      },
+      "tactician": {
+        "base_winrate": 0.50,
+        "base_economy": 108,
+        "base_dropout": 0.04,
+        "preferred_weapons": ["assault_rifle", "lmg"],
+        "perks": ["tactical_shield"]
+      },
+      "marksman": {
+        "base_winrate": 0.50,
+        "base_economy": 68,
+        "base_dropout": 0.07,
+        "preferred_weapons": ["sniper_rifle", "assault_rifle"],
+        "perks": ["eagle_eye"]
+      },
+      "vanguard": {
+        "base_winrate": 0.50,
+        "base_economy": 95,
+        "base_dropout": 0.05,
+        "preferred_weapons": ["plasma_rifle", "assault_rifle"],
+        "perks": ["bloodhound"]
+      },
+      "support": {
+        "base_winrate": 0.50,
+        "base_economy": 80,
+        "base_dropout": 0.07,
+        "preferred_weapons": ["lmg", "smg"],
+        "perks": ["team_heal"]
+      }
+    },
+    "perks": {
+      "adrenaline_rush": {
+        "type": "kill_reward",
+        "kill_threshold": 4,
+        "avg_kills_per_minute": 2.0,
+        "perk_duration": 8,
+        "economy_bonus": 0.03
+      },
+      "bloodhound": {
+        "type": "kill_reward",
+        "kill_threshold": 2,
+        "avg_kills_per_minute": 2.5,
+        "perk_duration": 12,
+        "economy_multiplier": 1.45,
+        "economy_bonus": 0.0
+      },
+      "tactical_shield": {
+        "type": "active",
+        "cooldown": 25,
+        "active_duration": 8,
+        "economy_bonus": 0.0
+      },
+      "eagle_eye": {
+        "type": "passive",
+        "base_uptime": 1.0,
+        "economy_bonus": 0.0
+      },
+      "team_heal": {
+        "type": "active",
+        "cooldown": 30,
+        "active_duration": 5,
+        "economy_bonus": 0.02
+      }
+    },
+    "synergy_combos": []
+  }
+}

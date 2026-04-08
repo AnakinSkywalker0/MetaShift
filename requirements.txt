@@ -1,0 +1,3 @@
+# Inference dependencies (runs outside Docker, on evaluation side)
+openai>=1.12.0
+requests>=2.31.0

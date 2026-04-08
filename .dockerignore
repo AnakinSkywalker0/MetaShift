@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+*.pyo
+.git/
+.gitignore
+.dockerignore
+*.md
+!README.md
+openenv.yaml
+inference.py
+_test_*
+_validate_*
+*.txt
+!server/requirements.txt
